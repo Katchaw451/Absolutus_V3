@@ -46,16 +46,21 @@ def planted_scale_free(n: int, k: int, seed: int, m: int = 2,
 
 
 def planted_decoy_hubs(n: int, k: int, seed: int, m: int = 2,
-                       n_decoys: int = 10, decoy_edges_per_node: int = 3,
+                       n_decoys: int | None = None, decoy_edges_per_node: int = 3,
                        weight_signal: float = 2.0, weight_noise: float = 1.0) -> Instance:
     """Planted k-module + decoy hubs (high degree, non-boosted weight).
 
     Exposes degree/study-bias artefacts: methods that only reward cohesion
     (λ_red = 0) tend to pick the decoy hubs; methods with λ_red > 0 recover
     the planted module.
+
+    If n_decoys is None, it is auto-scaled to min(10, max(2, n//4)) so the
+    generator is valid for small n. Pass an explicit value for full control.
     """
+    if n_decoys is None:
+        n_decoys = min(10, max(2, n // 4))
     if n_decoys + k > n:
-        raise ValueError("n_decoys + k must be <= n")
+        raise ValueError(f"n_decoys ({n_decoys}) + k ({k}) must be <= n ({n})")
     G = nx.barabasi_albert_graph(n, m, seed=seed)
     deg = np.array([d for _, d in G.degree()], dtype=np.int64)
     sorted_nodes = np.argsort(-deg)

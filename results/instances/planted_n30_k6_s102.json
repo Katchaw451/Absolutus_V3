@@ -1,0 +1,27 @@
+{
+  "arrays_sha256": {
+    "adj_data": "d464454e7a035445879e478cfc47ea6f87953d23062892ce892e07d92a07e724",
+    "planted": "e07fc4d278cff79d1843d027839a19a7b262556daba2fb450d3be80eeeaba3db",
+    "weights": "445a6bc0c41d594cde0102e614c89cdae7fae4b489ad292bb2fe7a381716283b"
+  },
+  "best_known_value": null,
+  "generator_meta": {
+    "generator": "planted_scale_free",
+    "m_ba": 2,
+    "seed": 102,
+    "weight_noise": 1.0,
+    "weight_signal": 2.0
+  },
+  "k": 6,
+  "n": 30,
+  "optimality_status": "unknown",
+  "planted": [
+    8,
+    13,
+    5,
+    2,
+    20,
+    6
+  ],
+  "schema_version": "1.0"
+}

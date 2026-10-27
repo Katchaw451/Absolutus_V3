@@ -39,8 +39,9 @@ def main(argv=None):
     ap.add_argument("--n", type=int, required=True)
     ap.add_argument("--p", type=int, required=True)
     ap.add_argument("--k", type=int, default=None)
-    ap.add_argument("--dev-seeds", type=int, nargs="*", default=[0, 1, 2, 3, 4])
-    ap.add_argument("--grid", type=int, default=20)
+    ap.add_argument("--dev-seeds", type=int, nargs="*", default=[0, 1, 2])
+    ap.add_argument("--grid", type=int, default=None,
+                   help="grid points per axis for p=1 (auto by n if omitted)")
     ap.add_argument("--restarts", type=int, default=200)
     ap.add_argument("--out-dir", default=str(ROOT / "results" / "tuning"))
     args = ap.parse_args(argv)
@@ -58,24 +59,34 @@ def main(argv=None):
         return float(np.mean(vals))
 
     if args.p == 1:
-        gammas = np.linspace(0, 2 * np.pi, args.grid, endpoint=False)
-        betas = np.linspace(0, np.pi, args.grid, endpoint=False)
+        # Auto grid: dense for small n (cheap), sparse for large n (statevector is 2^n)
+        grid = args.grid if args.grid is not None else (
+            20 if n <= 14 else 12 if n <= 16 else 8
+        )
+        print(f"  p=1 grid: {grid}x{grid} = {grid*grid} evals x {len(insts)} dev seeds = {grid*grid*len(insts)} sims", flush=True)
+        gammas = np.linspace(0, 2 * np.pi, grid, endpoint=False)
+        betas = np.linspace(0, np.pi, grid, endpoint=False)
         best = (np.inf, None, None)
-        for g in gammas:
-            for b in betas:
+        total = grid * grid
+        for i, g in enumerate(gammas):
+            for j, b in enumerate(betas):
                 v = mean_H(1, [g], [b])
                 if v < best[0]:
                     best = (v, [float(g)], [float(b)])
+            pct = (i + 1) / grid * 100
+            print(f"  {pct:5.1f}% best so far <H_C>={best[0]:.6f}", flush=True)
         score, g_best, b_best = best
     else:
         rng = np.random.default_rng(42)
         best = (np.inf, None, None)
-        for _ in range(args.restarts):
+        for r in range(args.restarts):
             gs = list(rng.uniform(0, 2 * np.pi, size=args.p))
             bs = list(rng.uniform(0, np.pi, size=args.p))
             v = mean_H(args.p, gs, bs)
             if v < best[0]:
                 best = (v, gs, bs)
+            if (r + 1) % max(1, args.restarts // 10) == 0:
+                print(f"  {100*(r+1)/args.restarts:5.1f}% best so far <H_C>={best[0]:.6f}", flush=True)
         score, g_best, b_best = best
 
     out = Path(args.out_dir) / f"{args.family}_n{n}_p{args.p}.json"
