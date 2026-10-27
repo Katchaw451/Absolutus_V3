@@ -84,6 +84,10 @@ def run_one(args) -> dict:
                 "python": sys.version.split()[0]},
     }
     if result is not None:
+        if result.extra.get("chi") is not None:
+            rec["chi"] = int(result.extra["chi"])
+        else:
+            rec["chi"] = None
         rec.update({
             "energy": float(result.energy),
             "objective": float(result.objective) if np.isfinite(result.objective) else None,
