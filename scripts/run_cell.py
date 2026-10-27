@@ -92,6 +92,17 @@ def run_one(args) -> dict:
             "n_evals": int(result.n_evals),
             "extra": {k: _jsonable(v) for k, v in result.extra.items()},
         })
+        # Planted / decoy recovery (metric from PROTOCOL section 7)
+        if inst.planted is not None and len(inst.planted) > 0:
+            recovered = int(result.x[inst.planted].sum())
+            rec["planted_recovery"] = recovered / float(len(inst.planted))
+        else:
+            rec["planted_recovery"] = None
+        decoys = inst.meta.get("decoys")
+        if decoys is not None and len(decoys) > 0:
+            rec["decoy_recovery"] = float(result.x[list(decoys)].sum()) / float(len(decoys))
+        else:
+            rec["decoy_recovery"] = None
     return rec
 
 

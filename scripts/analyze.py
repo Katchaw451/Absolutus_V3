@@ -51,6 +51,13 @@ def main(argv=None):
             "wall_std": float(grp["wall_time_s"].std(ddof=0)),
             "peak_mb_mean": float(grp["peak_mb"].mean()),
             "feasible_frac": float(grp["feasible"].mean()),
+            "planted_recovery_mean": (float(grp["planted_recovery"].astype(float).mean())
+                                       if "planted_recovery" in grp.columns
+                                       and grp["planted_recovery"].notna().any() else float("nan")),
+            "decoy_recovery_mean": (float(grp["decoy_recovery"].astype(float).mean())
+                                     if "decoy_recovery" in grp.columns
+                                     and grp["decoy_recovery"].notna().any() else float("nan")),
+            "success_frac": float(grp["success"].mean()),
         })
     out = pd.DataFrame(rows_out).sort_values(["family", "n", "k", "solver"])
     out.to_csv(args.out, index=False)
