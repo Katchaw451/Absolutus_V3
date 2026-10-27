@@ -5,3 +5,34 @@ __pycache__/
 .coverage
 results/**/*.npz
 !results/.gitkeep
+
+# Secrets / credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p8
+*.p8.*
+*.p12
+*.pfx
+*.crt
+*.cer
+*.jks
+id_rsa*
+secrets/
+credentials*
+config.local.*
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Large generated artifacts
+results/**/*.npz
+results/**/*.png
+results/**/*.pdf
+results/**/*.log
+!results/.gitkeep
