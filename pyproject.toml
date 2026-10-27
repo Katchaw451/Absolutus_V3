@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "modbench"
+version = "0.1.0"
+description = "Benchmark and toolkit for cardinality-constrained module selection on biological networks"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Absolutus V3 contributors"}]
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "networkx>=3.1",
+    "dwave-neal>=0.6",
+    "dwave-tabu>=0.4",
+    "quimb>=1.6",
+    "pandas>=2.1",
+    "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-cov"]
+
+[project.scripts]
+modbench = "modbench.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

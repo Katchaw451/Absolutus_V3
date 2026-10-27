@@ -1,0 +1,7 @@
+{
+  "title": "Absolutus_V3 (modbench)",
+  "description": "Benchmark and toolkit for cardinality-constrained module selection on biological networks.",
+  "license": "MIT",
+  "upload_type": "software",
+  "creators": [{"name": "Absolutus V3 contributors"}]
+}
