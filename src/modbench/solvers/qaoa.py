@@ -28,16 +28,28 @@ class QAOASolver(Solver):
                                  p=self.p, gammas=gammas, betas=betas,
                                  n_shots=self.n_shots, seed=seed,
                                  time_limit=time_limit)
+
+        # Propagate all JSON-serializable engine metadata (chi, cutoff for MPS),
+        # excluding the dense_state ndarray which is not needed downstream.
+        engine_meta = {k: v for k, v in r.metadata.items()
+                       if k not in ("dense_state", "gammas", "betas")}
+
+        extra = {
+            "engine": self.engine.name,
+            "p": self.p,
+            "lambda_coh": lambda_coh,
+            "lambda_red": lambda_red,
+            "gammas": list(map(float, gammas)),
+            "betas": list(map(float, betas)),
+            "energy_analytic": r.energy_analytic,
+            "discarded_weight": r.discarded_weight,
+            **engine_meta,
+        }
         return SolverResult(
             x=r.x_best, energy=r.energy_best, objective=r.objective_best,
             feasible=bool(int(r.x_best.sum()) == inst.k),
             wall_time_s=time.perf_counter() - t0,
             n_evals=r.n_evals,
             feasible_fraction=r.feasible_fraction,
-            extra={"engine": self.engine.name, "p": self.p,
-                   "lambda_coh": lambda_coh, "lambda_red": lambda_red,
-                   "gammas": list(map(float, gammas)),
-                   "betas": list(map(float, betas)),
-                   "energy_analytic": r.energy_analytic,
-                   "discarded_weight": r.discarded_weight},
+            extra=extra,
         )

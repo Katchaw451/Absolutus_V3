@@ -36,11 +36,15 @@ def git_head() -> str:
 
 def _jsonable(obj):
     if isinstance(obj, np.ndarray):
+        if np.iscomplexobj(obj):
+            return None  # complex arrays (e.g. dense_state) are not serializable
         return obj.tolist()
     if isinstance(obj, (np.integer,)):
         return int(obj)
     if isinstance(obj, (np.floating,)):
         return float(obj)
+    if isinstance(obj, complex):
+        return None
     return obj
 
 

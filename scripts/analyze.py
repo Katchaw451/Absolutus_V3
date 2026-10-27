@@ -116,7 +116,7 @@ def main(argv=None):
 
     out = pd.DataFrame(rows_out)
     # Sort: chi=None (classical/SV) goes last within (family,n,k,solver,engine,p)
-    out["_chi_sort"] = out["chi"].apply(lambda v: 10**9 if v is None else int(v))
+    out["_chi_sort"] = out["chi"].apply(lambda v: 10**9 if _is_missing(v) else int(v))
     out = (out.sort_values(["family", "n", "k", "solver", "engine", "p", "_chi_sort"])
               .drop(columns="_chi_sort"))
     out.to_csv(args.out, index=False)
