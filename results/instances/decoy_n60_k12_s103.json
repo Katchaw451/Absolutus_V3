@@ -1,0 +1,47 @@
+{
+  "arrays_sha256": {
+    "adj_data": "c127f0ee72395405116aa036334db0c1700341149fa4e08395fb67a9d76ce61b",
+    "planted": "06ca58f8f94ba7fd9023c1b02712f59d55eec5c29551e2dfcae451510f245e66",
+    "weights": "d26429a45ac88959180b9a4f972b2029bfd81e14e0aab2f38086349b8d279503"
+  },
+  "best_known_value": null,
+  "generator_meta": {
+    "decoy_edges_per_node": 3,
+    "decoys": [
+      3,
+      2,
+      5,
+      8,
+      4,
+      0,
+      16,
+      6,
+      13,
+      1
+    ],
+    "generator": "planted_decoy_hubs",
+    "m_ba": 2,
+    "n_decoys": 10,
+    "seed": 103,
+    "weight_noise": 1.0,
+    "weight_signal": 2.0
+  },
+  "k": 12,
+  "n": 60,
+  "optimality_status": "unknown",
+  "planted": [
+    58,
+    23,
+    37,
+    19,
+    18,
+    43,
+    21,
+    14,
+    28,
+    47,
+    40,
+    39
+  ],
+  "schema_version": "1.0"
+}

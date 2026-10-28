@@ -30,8 +30,12 @@ def fig_quality_vs_chi(df, outdir):
     # chi column comes from the tag; we re-derive from raw jsonl in reproduce.sh
     # Simpler: summary CSV has 'engine' via grouping; we need 'chi' if present.
     if "chi" not in q.columns:
-        print("  [skip] quality-vs-chi: summary CSV missing 'chi' column "
-              "(will populate from JSONL in a later pass)")
+        print("  [skip] quality-vs-chi: summary CSV missing 'chi' column")
+        return
+    q = q[q["chi"].notna()]
+    if q.empty:
+        print("  [skip] quality-vs-chi: no MPS rows in summary yet "
+              "(Phase 5d.2 will populate)")
         return
     fig, axes = plt.subplots(1, len(FAMILIES), figsize=(4 * len(FAMILIES), 3.5),
                              sharey=True, squeeze=False)
