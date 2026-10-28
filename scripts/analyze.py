@@ -49,6 +49,18 @@ def _extract_chi(row):
     return None
 
 
+def _extract_discarded(row):
+    v = row["discarded_weight"] if "discarded_weight" in row.index else None
+    if not _is_missing(v):
+        try: return float(v)
+        except (TypeError, ValueError): pass
+    e = row["extra"] if "extra" in row.index else None
+    if isinstance(e, dict) and not _is_missing(e.get("discarded_weight")):
+        try: return float(e["discarded_weight"])
+        except (TypeError, ValueError): pass
+    return None
+
+
 def main(argv=None):
     p = argparse.ArgumentParser()
     p.add_argument("--in", dest="inputs", nargs="+", required=True)
@@ -66,6 +78,13 @@ def main(argv=None):
         raise SystemExit("no rows to aggregate")
 
     df["chi"] = df.apply(_extract_chi, axis=1)  # object dtype: int or None
+    df["discarded_weight"] = df.apply(_extract_discarded, axis=1)
+    # Honesty fix: at n>12 the MPS engine cannot compute energy_analytic
+    # (dense state would be 2^n complex amplitudes). The engine emits 0.0 as a
+    # sentinel; treat it as "not measured" -> NaN so the report cannot claim
+    # "zero truncation" where we simply did not measure it.
+    df.loc[(df["n"] > 12) & (df["engine"] == "mps"), "discarded_weight"] = None
+
 
     grp_cols = ["family", "n", "k", "solver", "engine", "p", "chi"]
 
@@ -111,6 +130,9 @@ def main(argv=None):
             "feasible_frac_shots": feas_frac_shots,
             "planted_recovery_mean": planted_rec,
             "decoy_recovery_mean": decoy_rec,
+            "discarded_weight_mean": (float(grp["discarded_weight"].astype(float).mean())
+                                       if "discarded_weight" in grp.columns
+                                       and grp["discarded_weight"].notna().any() else float("nan")),
             "success_frac": success_frac,
         })
 

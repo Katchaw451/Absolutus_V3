@@ -113,8 +113,11 @@ class MPSEngine(Engine):
             obj[i] = inst.objective(bits[i], lambda_coh, lambda_red)
 
         best = int(np.argmin(energies)) if len(energies) else -1
+        # Absent a dense-state extraction (n > dense_threshold), truncation is
+        # not measurable in this release; report NaN (not 0.0) so downstream
+        # analysis cannot mistake "unmeasured" for "zero truncation".
         discarded = (abs(energy_analytic - float(energies.mean()))
-                     if np.isfinite(energy_analytic) and len(energies) else 0.0)
+                     if np.isfinite(energy_analytic) and len(energies) else float("nan"))
 
         return EngineResult(
             x_best=bits[best].copy() if best >= 0 else np.zeros(n, dtype=np.int8),

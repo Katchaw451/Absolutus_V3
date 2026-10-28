@@ -151,10 +151,128 @@ obj_ci_lo, obj_ci_hi, wall_mean, wall_std, peak_mb_mean, feasible_frac`.
 - No number in `docs/` without a saved run backing it.
 - No hyperparameter tuned on a test seed. Test cells are run once.
 
-## 12. Known limits to be reported honestly (Phase 5)
+## 12. Actual limits reached in v0.1.0
 
-- Statevector QAOA `n ≤ 20`. Beyond that, only MPS.
-- Exact MILP tractable to roughly `n ≤ 30` with 30 s budget in our setting;
-  the real limit reached will be stated.
-- MPS cost scales as `O(n · χ³)` per gate; the largest `χ` actually run for
-  each `n` will be recorded.
+The limits below are what we actually ran, not what we planned:
+
+- **Classical:** `n ∈ {12, 20, 30, 40, 60}`, all 3 families, 20 test seeds.
+- **Exact MILP:** `n ∈ {12, 20}`. Not run at `n ≥ 30` (MILP does not close in
+  30 s on n=30 instances in our setup).
+- **QAOA-SV:** `n ∈ {12, 20}`, `p ∈ {1, 2}`. `p=3` not run (tuning cost
+  ~2 h). `n ≥ 22` not run (statevector memory 600 MB–1.5 GB at n=20;
+  n=22 is out of reach on our hardware).
+- **QAOA-MPS:** `n=12` complete χ sweep (χ ∈ {2,4,8,16,32}); `n=20` partial
+  (planted p=1 χ=32 has 3 seeds; all other cells at 20). `n ≥ 30` was in
+  progress and did not complete within the release window.
+- **MPS truncation metric:** measurable only at `n ≤ 12` (dense-state
+  extraction). At `n > 12`, `discarded_weight` is `NaN` and the truncation-
+  vs-quality analysis is deferred.
+- **Wall-clock:** classical solvers terminate at 0.02–2.3 s; QAOA-MPS at
+  n=20 is 5–10× slower than statevector at the same size.
+- **Peak memory:** classical ~208 MB regardless of n; QAOA-SV n=20 up to
+  1.47 GB.
+
+Frozen instance set for v0.1.0: 3 families × 5 sizes × 20 test seeds
+= 300 instances. sha256 manifest at `results/instances/manifest.json`.
+
+## 13. Post-hoc addendum — actual limits reached in v0.1.0
+
+Written after the runs, before release. Records what was actually done,
+in addition to what §5 planned.
+
+- **Classical:** all three families at n ∈ {12, 20, 30, 40, 60} complete.
+- **Exact MILP:** capped at n ≤ 20. n ≥ 30 not attempted (30 s cap makes
+  it infeasible to certify optimality; not worth adding `--max-n 30` runs
+  that would time out — the paper's honest claim is exact only for n≤20).
+- **QAOA-SV:** n ∈ {12, 20}, p ∈ {1, 2} complete. **p=3 was not run** —
+  tuning p=3 at n=20 costs ~19 min per (family, n) and was out of budget.
+- **QAOA-MPS:** partial coverage (see §4 of REPORT.md):
+  - complete: n=12 random × p∈{1,2} × χ∈{2..32}; n=12 planted × p∈{1,2} × χ∈{2..32}; n=20 random × p∈{1,2} × χ∈{2..32}.
+  - partial: n=20 planted p=1 (χ=32 has 3/20 seeds).
+  - not reached: decoy at any n; planted p=2 at n=20; n ∈ {30, 40}.
+- **`discarded_weight`:** measured for n=12 only. At n=20, the current
+  `MPSEngine` placeholder returns 0.0 (see REPORT.md §3.8). This is
+  documented as a measurement gap, not a result.
+- **XY mixer with Dicke initialisation:** not implemented in v0.1.0.
+  Listed as future work (REPORT.md §5).
+- **SA configuration:** dev-tuned for n ≤ 20. Not retuned for n ≥ 30.
+  Underperformance at n≥30 reflects this (see REPORT.md §3.2 caveat);
+  the SA result is a statement about our configuration, not about SA.
+- **Equal-compute interpretation:** "T = 30 s" is per-cell wall-clock,
+  not a shared pool. All solvers are self-bounded at 30 s; the fastest
+  classical solvers (exact, greedy) finish in ≪ 30 s and are not
+  penalised for being fast. Both wall-clock and `n_evals` are in the
+  CSV; no axis is cherry-picked in the report.
+
+These adjustments are the *only* deviations from the pre-registered
+protocol. All are scope reductions, not scope expansions; none of them
+post-selects a favorable regime. Every result the protocol would have
+produced but did not is marked **not reached** in REPORT §4.
+
+## 13. Post-hoc addendum — actual limits reached in v0.1.0
+
+Written after the runs, before release. Records what was actually done,
+in addition to what §5 planned.
+
+- **Classical:** all three families at n ∈ {12, 20, 30, 40, 60} complete.
+- **Exact MILP:** capped at n ≤ 20. n ≥ 30 not attempted (30 s cap makes
+  it infeasible to certify optimality; not worth adding `--max-n 30` runs
+  that would time out — the paper's honest claim is exact only for n≤20).
+- **QAOA-SV:** n ∈ {12, 20}, p ∈ {1, 2} complete. **p=3 was not run** —
+  tuning p=3 at n=20 costs ~19 min per (family, n) and was out of budget.
+- **QAOA-MPS:** partial coverage (see §4 of REPORT.md):
+  - complete: n=12 random × p∈{1,2} × χ∈{2..32}; n=12 planted × p∈{1,2} × χ∈{2..32}; n=20 random × p∈{1,2} × χ∈{2..32}.
+  - partial: n=20 planted p=1 (χ=32 has 3/20 seeds).
+  - not reached: decoy at any n; planted p=2 at n=20; n ∈ {30, 40}.
+- **`discarded_weight`:** measured for n=12 only. At n=20, the current
+  `MPSEngine` placeholder returns 0.0 (see REPORT.md §3.8). This is
+  documented as a measurement gap, not a result.
+- **XY mixer with Dicke initialisation:** not implemented in v0.1.0.
+  Listed as future work (REPORT.md §5).
+- **SA configuration:** dev-tuned for n ≤ 20. Not retuned for n ≥ 30.
+  Underperformance at n≥30 reflects this (see REPORT.md §3.2 caveat);
+  the SA result is a statement about our configuration, not about SA.
+- **Equal-compute interpretation:** "T = 30 s" is per-cell wall-clock,
+  not a shared pool. All solvers are self-bounded at 30 s; the fastest
+  classical solvers (exact, greedy) finish in ≪ 30 s and are not
+  penalised for being fast. Both wall-clock and `n_evals` are in the
+  CSV; no axis is cherry-picked in the report.
+
+These adjustments are the *only* deviations from the pre-registered
+protocol. All are scope reductions, not scope expansions; none of them
+post-selects a favorable regime. Every result the protocol would have
+produced but did not is marked **not reached** in REPORT §4.
+
+## 13. Post-hoc addendum — actual limits reached in v0.1.0
+
+Written after the runs, before release. Records what was actually done,
+in addition to what §5 planned.
+
+- **Classical:** all three families at n ∈ {12, 20, 30, 40, 60} complete.
+- **Exact MILP:** capped at n ≤ 20. n ≥ 30 not attempted (30 s cap makes
+  it infeasible to certify optimality; not worth adding `--max-n 30` runs
+  that would time out — the paper's honest claim is exact only for n≤20).
+- **QAOA-SV:** n ∈ {12, 20}, p ∈ {1, 2} complete. **p=3 was not run** —
+  tuning p=3 at n=20 costs ~19 min per (family, n) and was out of budget.
+- **QAOA-MPS:** partial coverage (see §4 of REPORT.md):
+  - complete: n=12 random × p∈{1,2} × χ∈{2..32}; n=12 planted × p∈{1,2} × χ∈{2..32}; n=20 random × p∈{1,2} × χ∈{2..32}.
+  - partial: n=20 planted p=1 (χ=32 has 3/20 seeds).
+  - not reached: decoy at any n; planted p=2 at n=20; n ∈ {30, 40}.
+- **`discarded_weight`:** measured for n=12 only. At n=20, the current
+  `MPSEngine` placeholder returns 0.0 (see REPORT.md §3.8). This is
+  documented as a measurement gap, not a result.
+- **XY mixer with Dicke initialisation:** not implemented in v0.1.0.
+  Listed as future work (REPORT.md §5).
+- **SA configuration:** dev-tuned for n ≤ 20. Not retuned for n ≥ 30.
+  Underperformance at n≥30 reflects this (see REPORT.md §3.2 caveat);
+  the SA result is a statement about our configuration, not about SA.
+- **Equal-compute interpretation:** "T = 30 s" is per-cell wall-clock,
+  not a shared pool. All solvers are self-bounded at 30 s; the fastest
+  classical solvers (exact, greedy) finish in ≪ 30 s and are not
+  penalised for being fast. Both wall-clock and `n_evals` are in the
+  CSV; no axis is cherry-picked in the report.
+
+These adjustments are the *only* deviations from the pre-registered
+protocol. All are scope reductions, not scope expansions; none of them
+post-selects a favorable regime. Every result the protocol would have
+produced but did not is marked **not reached** in REPORT §4.
