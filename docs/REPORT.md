@@ -1,6 +1,6 @@
 # Absolutus_V3 — Report (v0.1.0)
 
-**Status:** final for release v0.1.0.
+**Status:** final for release v0.1.0 (released 2026-10-28).
 **Data provenance:** every number below is a cell in
 `results/test/summary_all.csv`, which aggregates per-seed JSONL rows under
 `results/test/`. Each JSONL row records `env.git_head`, `env.numpy`,

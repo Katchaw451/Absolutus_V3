@@ -1,8 +1,29 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
+title: "Absolutus_V3 (modbench)"
+abstract: >
+  An open, reproducible benchmark and toolkit for cardinality-constrained
+  module selection (QUBO / densest-k-subgraph style) on biologically
+  structured networks. Compares classical solvers (random, greedy, simulated
+  annealing, tabu, exact MILP) against QAOA with statevector and MPS
+  (tensor-network) simulation at equal compute, with planted ground truth
+  and a decoy-hub null model to expose degree/study-bias artefacts. v0.1.0
+  ships 300 frozen instances (3 families x 5 sizes x 20 test seeds, sha256
+  manifest), 114 aggregated cells with 20 seeds per cell and 95% bootstrap
+  CIs, and a claims register where every claim cites a saved run.
 authors:
   - family-names: "Absolutus V3 contributors"
-title: "Absolutus_V3 (modbench)"
 version: 0.1.0
-date-released: 2025-01-01
-url: "https://example.org/absolutus-v3"
+date-released: 2026-10-28
+license: MIT
+repository-code: "https://github.com/Katchaw451/Absolutus_V3"
+url: "https://github.com/Katchaw451/Absolutus_V3"
+keywords:
+  - qubo
+  - qaoa
+  - tensor-networks
+  - mps
+  - benchmark
+  - module-selection
+  - bioinformatics
+  - quantum-optimization

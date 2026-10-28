@@ -1,7 +1,30 @@
 {
-  "title": "Absolutus_V3 (modbench)",
-  "description": "Benchmark and toolkit for cardinality-constrained module selection on biological networks.",
+  "title": "Absolutus_V3 (modbench): cardinality-constrained module selection benchmark on biological networks",
+  "description": "<p><strong>Absolutus_V3 (modbench)</strong> is an open, reproducible benchmark and toolkit for cardinality-constrained module selection (QUBO / densest-k-subgraph style) on biologically structured networks.</p><p>It compares classical solvers (random, greedy, simulated annealing, tabu, exact MILP via HiGHS) against QAOA with statevector and MPS (tensor-network) simulation <em>at equal compute</em> (30 s wall-clock and 10,000 QUBO evaluations, both reported). Instances include planted ground truth and a decoy-hub null model to expose degree/study-bias artefacts.</p><p><strong>v0.1.0 contents:</strong> 300 frozen instances (3 families &times; 5 sizes &times; 20 test seeds; sha256 manifest at results/instances/manifest.json); 114 aggregated result cells with 20 seeds each and 95% bootstrap CIs; a claims register (docs/CLAIMS.md) where every claim cites a saved run; and honest documentation of every regime where classical baselines beat QAOA.</p>",
   "license": "MIT",
   "upload_type": "software",
-  "creators": [{"name": "Absolutus V3 contributors"}]
+  "access_right": "open",
+  "publication_date": "2026-10-28",
+  "version": "0.1.0",
+  "language": "eng",
+  "keywords": [
+    "qubo",
+    "qaoa",
+    "tensor networks",
+    "benchmark",
+    "quantum optimization",
+    "bioinformatics",
+    "mps",
+    "module selection"
+  ],
+  "creators": [
+    { "name": "Absolutus V3 contributors" }
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/Katchaw451/Absolutus_V3",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
 }
